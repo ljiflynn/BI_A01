@@ -14,6 +14,7 @@ namespace BI_A01
     public partial class Paleto : Form
     {
         private const int DEFAULT_POINT_COUNT = 10;
+        private List<ChartData> DataList = new List<ChartData>();
         public Paleto()
         {
             InitializeComponent();
@@ -26,7 +27,9 @@ namespace BI_A01
         /// <param name="e"></param>
         private void Paleto_Load(object sender, EventArgs e)
         {
+            chartGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             Default_Data();
+            chartGrid.DataSource = DataList;
         }
 
         private void Default_Data()
@@ -77,7 +80,26 @@ namespace BI_A01
             {
                 columnVal = temp.Points[i].YValues[0];
                 lineVal = series.Points[i].YValues[0];
-                chartGrid.Rows.Add(columnVal, lineVal);
+                DataList.Add(new ChartData()
+                {
+                    ID = i + 1,
+                    ColumnValue = columnVal,
+                    LineValue = lineVal
+                });
+            }
+        }
+
+        private void chartGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            ChartData selectedData = chartGrid.SelectedRows[0].DataBoundItem as ChartData;
+            if (selectedData != null)
+            {
+                columnTextBox.Text = selectedData.ColumnValue.ToString();
+                lineTextBox.Text = selectedData.LineValue.ToString();
+            }
+            else
+            {
+
             }
         }
     }

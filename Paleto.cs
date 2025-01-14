@@ -26,19 +26,18 @@ namespace BI_A01
         /// <param name="e"></param>
         private void Paleto_Load(object sender, EventArgs e)
         {
-            int dataPoint = 100;
-            for (int i = 1; i <= DEFAULT_POINT_COUNT; i++)
-            {
-                dataPoint = dataPoint + (dataPoint / i);
-                paleto_chart.Series["Default"].Points.AddY(dataPoint);
-            }
-
-
-            Update_Data();
+            Default_Data();
         }
 
-        private void Update_Data()
+        private void Default_Data()
         {
+            int dataPoint = 100;
+            for(int i = 1; i <= DEFAULT_POINT_COUNT; i++)
+            {
+                paleto_chart.Series["Default"].Points.AddY(dataPoint);
+                dataPoint = dataPoint + (dataPoint / i);
+            }
+
             string chartAreaStr = paleto_chart.Series["Default"].ChartArea;
             double total = 0.0;
             double totalPercentage = 0.0;
@@ -48,12 +47,12 @@ namespace BI_A01
             paleto_chart.DataManipulator.Sort(PointSortOrder.Descending, "Default");
 
             
-            foreach (DataPoint pt in paleto_chart.Series["Default"].Points)
+            foreach(DataPoint pt in paleto_chart.Series["Default"].Points)
             {
                 total += pt.YValues[0];
             }
             
-            paleto_chart.ChartAreas[chartAreaStr].AxisY.Maximum = total;
+            paleto_chart.ChartAreas[chartAreaStr].AxisY.Maximum = total / 4;
             paleto_chart.Series.Add(series);
 
             series.ChartType = SeriesChartType.Line;
@@ -65,10 +64,20 @@ namespace BI_A01
             paleto_chart.ChartAreas[chartAreaStr].AxisY2.LabelStyle.Format = "P0";
             paleto_chart.ChartAreas[chartAreaStr].AxisX.LabelStyle.IsEndLabelVisible = false;
 
-            foreach (DataPoint pt in paleto_chart.Series["Default"].Points)
+            foreach(DataPoint pt in paleto_chart.Series["Default"].Points)
             {
                 totalPercentage += (pt.YValues[0] / total);
                 series.Points.Add(Math.Round(totalPercentage, 2));
+            }
+
+            Series temp = paleto_chart.Series["Default"];
+            double columnVal;
+            double lineVal;
+            for(int i = 0; i < paleto_chart.Series["Default"].Points.Count; i++)
+            {
+                columnVal = temp.Points[i].YValues[0];
+                lineVal = series.Points[i].YValues[0];
+                chartGrid.Rows.Add(columnVal, lineVal);
             }
         }
     }

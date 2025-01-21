@@ -15,6 +15,7 @@ namespace BI_A01
     {
         private const int DEFAULT_POINT_COUNT = 10;
         private List<ChartData> DataList = new List<ChartData>();
+        private ChartData selectedData;
         public Paleto()
         {
             InitializeComponent();
@@ -91,16 +92,19 @@ namespace BI_A01
 
         private void chartGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            ChartData selectedData = chartGrid.SelectedRows[0].DataBoundItem as ChartData;
+            selectedData = chartGrid.SelectedRows[0].DataBoundItem as ChartData;
             if (selectedData != null)
             {
                 columnTextBox.Text = selectedData.ColumnValue.ToString();
                 lineTextBox.Text = selectedData.LineValue.ToString();
             }
-            else
-            {
+        }
 
-            }
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            selectedData.ColumnValue = Convert.ToDouble(columnTextBox.Text);
+            selectedData.LineValue = Convert.ToDouble(lineTextBox.Text);
+            chartGrid.Update();
         }
     }
 }
